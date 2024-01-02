@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apartment List</title>
+    <style>
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <a href="{% url 'apartment_list' %}" class="active">Apartment List</a>
+        <a href="{% url 'monthly_report' %}">Monthly Reports</a>
+        <a href="{% url 'unpaid_reports' %}">Unpaid Reports</a>
+        <a href="{% url 'add_apartment' %}">Add Apartment</a>
+        <a href="{% url 'export_confirmation' %}">Export To Excel</a>
+
+    </div>
+
+    <h1>Apartment List</h1>
+
+    <form id="filter-form" method="get" action="{% url 'apartment_list' %}">
+        <table class="filter-table">
+            <tr>
+                <th colspan="2">Filter Options</th>
+            </tr>
+            <tr>
+                <td>
+                    <label for="show_inactive">Show Inactive:</label>
+                </td>
+                <td>
+                    <!-- Ensure the checkbox name is "show_inactive" -->
+                    <input type="checkbox" id="show_inactive" name="show_inactive" value="1" {% if show_inactive %}checked{% endif %}>
+                </td>
+            </tr>
+            <!-- Add other filter options if needed -->
+        </table>
+    </form>
+    
+    <script>
+
+    document.getElementById('show_inactive').addEventListener('change', function() {
+
+        document.getElementById('filter-form').action = this.checked
+            ? "{% url 'apartment_list' %}?show_inactive=1"
+            : "{% url 'apartment_list' %}";
+        document.getElementById('filter-form').submit();
+    
+
+        localStorage.setItem('show_inactive', this.checked ? '1' : '0');
+    });
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        var showInactiveCheckbox = document.getElementById('show_inactive');
+        var savedState = localStorage.getItem('show_inactive');
+        if (savedState === '1') {
+            showInactiveCheckbox.checked = true;
+        }
+    });
+    </script>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th onclick="sortTable('unit_id')">Unit ID</th>
+            <th>Name</th>
+            <th>Phone Number</th>
+            <th>Email</th>
+            <th>Rent</th>
+            <th>Maintenance</th>
+            <th>Parking</th>
+            <th>Other Payments</th>
+            <th>Active</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for apartment in page_obj %}
+            <tr>
+                <td><a href="{% url 'apartment_details' apartment_id=apartment.id %}">{{ apartment.unit_id }}</a></td>
+                <td>{{ apartment.name }}</td>
+                <td>{{ apartment.phone_number }}</td>
+                <td>{{ apartment.email }}</td>
+                <td>{{ apartment.rent }}</td>
+                <td>{{ apartment.maintenance }}</td>
+                <td>{{ apartment.parking }}</td>
+                <td>{{ apartment.other_payments }}</td>
+                <td>{% if apartment.active %}Yes{% else %}No{% endif %}</td>
+                <td><a href="{% url 'edit_apartment' apartment_id=apartment.id %}">Edit</a></td>
+                <td><a href="#" class="delete-link" data-apartment-id="{{ apartment.id }}">Delete</a></td>
+            </tr>
+        {% endfor %}
+    </tbody>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var deleteLinks = document.querySelectorAll('.delete-link');
+    
+            deleteLinks.forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var apartmentId = this.getAttribute('data-apartment-id');
+    
+                    if (/^\d+$/.test(apartmentId)) {
+
+                        if (confirm('Are you sure you want to delete this apartment?')) {
+
+                            window.location.href = "{% url 'delete_apartment' apartment_id=0 %}".replace('0', apartmentId);
+                        }
+                    } else {
+                        console.error('Invalid apartment ID:', apartmentId);
+                    }
+                });
+            });
+        });
+    </script>
+</table>
+
+
+    <!-- Pagination -->
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"></script>
+    <script>
+        function sortTable(fieldName) {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.querySelector("table");
+            switching = true;
+            dir = "asc";
+
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+
+                    x = rows[i].getElementsByTagName("td")[getFieldIndex(fieldName)].innerText.toLowerCase();
+                    y = rows[i + 1].getElementsByTagName("td")[getFieldIndex(fieldName)].innerText.toLowerCase();
+
+                    if (dir == "asc") {
+                        if (x > y) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir == "desc") {
+                        if (x < y) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+
+            updateSortIcons(fieldName, dir);
+        }
+
+        function getFieldIndex(fieldName) {
+            var headers = document.querySelectorAll("th");
+            for (var i = 0; i < headers.length; i++) {
+                if (headers[i].innerText.trim().toLowerCase() === fieldName) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        function updateSortIcons(fieldName, direction) {
+            var headers = document.querySelectorAll("th");
+            for (var i = 0; i < headers.length; i++) {
+                headers[i].classList.remove("asc", "desc");
+            }
+
+            var header = document.querySelector("th:contains('" + fieldName + "')");
+            if (header) {
+                header.classList.add(direction);
+            }
+        }
+    </script>
+</body>
+</html>
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f0f0f0;
+        color: #333;
+    }
+
+    h1 {
+        text-align: center;
+        padding: 20px 0;
+        color: #3498db;
+    }
+
+    .navbar {
+        background-color: #333;
+        overflow: hidden;
+    }
+
+    .navbar a {
+        float: left;
+        display: block;
+        color: #f2f2f2;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+    }
+
+    .navbar a:hover {
+        background-color: #ddd;
+        color: black;
+    }
+
+    .active {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    form {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    form label {
+        margin-right: 10px;
+        font-size: 16px;
+        color: #3498db;
+        display: inline-block;
+    }
+
+    form input[type="checkbox"] {
+        margin-right: 5px;
+    }
+
+    .filter-table {
+        display: inline-block;
+        border-collapse: collapse;
+        margin-top: 10px;
+        background-color: #fff;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .filter-table th, .filter-table td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .filter-table th {
+        background-color: #3498db;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .filter-table th:hover {
+        background-color: #2073b0;
+    }
+
+    .filter-table .asc:after, .filter-table .desc:after {
+        content: ' ▲▼';
+        font-size: 12px;
+        margin-left: 5px;
+        color: #666;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background-color: #fff;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    th, td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        cursor: pointer;
+        background-color: #3498db;
+        color: #fff;
+        border-radius: 8px 0 0 0;
+        transition: background-color 0.3s;
+    }
+
+    th:hover {
+        background-color: #2073b0;
+    }
+
+    .asc:after, .desc:after {
+        content: ' ▲▼';
+        font-size: 12px;
+        margin-left: 5px;
+        color: #666;
+    }
+
+    .pagination {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        font-size: 16px;
+        color: #3498db;
+    }
+
+    .pagination a {
+        margin: 0 10px;
+        text-decoration: none;
+        color: #3498db;
+        transition: color 0.3s;
+    }
+
+    .pagination a:hover {
+        text-decoration: underline;
+        color: #2073b0;
+    }
+
+    .current {
+        font-weight: bold;
+        color: #2073b0;
+    }
+</style>
