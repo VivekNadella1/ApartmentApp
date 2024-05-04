@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consolidated Reports</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 20px 0;
+            color: #3498db;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        table {
+            width: 48%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #fff;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            cursor: pointer;
+            background-color: #3498db;
+            color: #fff;
+            border-radius: 8px 0 0 0;
+            transition: background-color 0.3s;
+        }
+
+        th:hover {
+            background-color: #2073b0;
+        }
+
+        .asc:after,
+        .desc:after {
+            content: ' ▲▼';
+            font-size: 12px;
+            margin-left: 5px;
+            color: #666;
+        }
+
+        .pagination {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            font-size: 16px;
+            color: #3498db;
+        }
+
+        .pagination a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #3498db;
+            transition: color 0.3s;
+        }
+
+        .pagination a:hover {
+            text-decoration: underline;
+            color: #2073b0;
+        }
+
+        .current {
+            font-weight: bold;
+            color: #2073b0;
+        }
+
+        .details-table {
+            width: 48%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #fff;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .payments-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #fff;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .active {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <a href="{% url 'apartment_list' %}">Apartment List</a>
+        <a href="{% url 'apartment_details' apartment_id=apartment.id %}">Apartment Details</a>
+        <a href="{% url 'consolidated_reports' apartment_id=apartment.id %}" class="active">Consolidated List</a>
+        <a href="{% url 'add_payment' apartment_id=apartment.id %}">Add Payment</a>
+    </div>
+    
+    <h1>{{ apartment.unit_id }} - Consolidated Reports</h1>
+
+    <div class="container">
+        <table border="1" class="details-table">
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Name</td>
+                <td>{{ apartment.name }}</td>
+            </tr>
+            <tr>
+                <td>Phase</td>
+                <td>{{ apartment.get_phase_display }}</td>
+            </tr>
+            <tr>
+                <td>Unit ID</td>
+                <td>{{ apartment.unit_id }}</td>
+            </tr>
+            <tr>
+                <td>Phone Number</td>
+                <td>{{ apartment.phone_number }}</td>
+            </tr>
+            <tr>
+                <td>Emergency Number</td>
+                <td>{{ apartment.emergency_number }}</td>
+            </tr>
+            <tr>
+                <td>Adhar Number</td>
+                <td>{{ apartment.adhar_number }}</td>
+            </tr>
+            <tr>
+                <td>Email</td>
+                <td>{{ apartment.email }}</td>
+            </tr>
+            <tr>
+                <td>Rent</td>
+                <td>{{ apartment.rent }}</td>
+            </tr>
+            <tr>
+                <td>Maintenance</td>
+                <td>{{ apartment.maintenance }}</td>
+            </tr>
+            <tr>
+                <td>Parking</td>
+                <td>{{ apartment.parking }}</td>
+            </tr>
+
+        </table>
+
+        <table border="1" class="details-table">
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Other Payments</td>
+                <td>{{ apartment.other_payments }}</td>
+            </tr>
+            <tr>
+                <td>Active</td>
+                <td>{{ apartment.active }}</td>
+            </tr>
+            <tr>
+                <td>Furnished</td>
+                <td>{{ apartment.furnished }}</td>
+            </tr>
+            <tr>
+                <td>Internet</td>
+                <td>{{ apartment.internet }}</td>
+            </tr>
+            <tr>
+                <td>Internet Charge</td>
+                <td>{{ apartment.internet_charge }}</td>
+            </tr>
+            <tr>
+                <td>Security Deposit</td>
+                <td>{{ apartment.security_deposit }}</td>
+            </tr>
+            <tr>
+                <td>Date Created</td>
+                <td>{{ apartment.date_created }}</td>
+            </tr>
+            <tr>
+                <td>Agreement</td>
+                <td>{% if apartment.agreement %}<a href="{% url 'view_agreement' apartment_id=apartment.id %}">View Agreement</a>{% else %}No agreement document available.{% endif %}</td>
+            </tr>
+            <tr>
+                <td>Adhar Document</td>
+                <td>{% if apartment.adhar %}<a href="{% url 'view_adhar' apartment_id=apartment.id %}">View Adhar</a>{% else %}No Adhar document available.{% endif %}</td>
+            </tr>
+        </table>
+    </div>
+
+    <table border="1" class="payments-table">
+        <thead>
+            <tr>
+                <th onclick="sortTable('year')">Year</th>
+                <th>Month</th>
+                <th onclick="sortTable('rent_paid')">Rent Paid</th>
+                <th onclick="sortTable('maintenance_paid')">Maintenance Paid</th>
+                <th onclick="sortTable('parking_paid')">Parking Paid</th>
+                <th onclick="sortTable('internet_paid')">Internet Paid</th>
+                <th onclick="sortTable('water_paid')">Water Paid</th>
+                <th onclick="sortTable('water_to_be_paid')">Water To Be Paid</th>
+                <th onclick="sortTable('other_paid')">Other Paid</th>
+                <th onclick="sortTable('transaction_date')">Transaction Date</th>
+                <th onclick="sortTable('date_entered')">Date Entered</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for consolidated_payment in consolidated_payments %}
+            <tr>
+                <td>{{ consolidated_payment.year }}</td>
+                <td>
+                    {% if consolidated_payment.month == 1 %} January
+                    {% elif consolidated_payment.month == 2 %} February
+                    {% elif consolidated_payment.month == 3 %} March
+                    {% elif consolidated_payment.month == 4 %} April
+                    {% elif consolidated_payment.month == 5 %} May
+                    {% elif consolidated_payment.month == 6 %} June
+                    {% elif consolidated_payment.month == 7 %} July
+                    {% elif consolidated_payment.month == 8 %} August
+                    {% elif consolidated_payment.month == 9 %} September
+                    {% elif consolidated_payment.month == 10 %} October
+                    {% elif consolidated_payment.month == 11 %} November
+                    {% elif consolidated_payment.month == 12 %} December
+                    {% endif %}
+                </td>
+                <td>{{ consolidated_payment.total_rent_paid }}</td>
+                <td>{{ consolidated_payment.total_maintenance_paid }}</td>
+                <td>{{ consolidated_payment.total_parking_paid }}</td>
+                <td>{{ consolidated_payment.total_internet_paid }}</td>
+                <td>{{ consolidated_payment.total_water_paid }}</td>
+                <td>{{ consolidated_payment.total_water_to_be_paid }}</td>
+                <td>{{ consolidated_payment.total_other_paid }}</td>
+                <td>{{ consolidated_payment.latest_transaction_date }}</td>
+                <td>{{ consolidated_payment.latest_date_entered }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if payments.has_previous %}
+            <a href="?page=1{% if sort %}&sort={{ sort }}{% endif %}">&laquo; first</a>
+            <a href="?page={{ payments.previous_page_number }}{% if sort %}&sort={{ sort }}{% endif %}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ payments.number }} of {{ payments.paginator.num_pages }}.
+            </span>
+
+            {% if payments.has_next %}
+            <a href="?page={{ payments.next_page_number }}{% if sort %}&sort={{ sort }}{% endif %}">next</a>
+            <a href="?page={{ payments.paginator.num_pages }}{% if sort %}&sort={{ sort }}{% endif %}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+
+    <script>
+        function sortTable(fieldName) {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.querySelector("table");
+            switching = true;
+            dir = "asc";
+
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+
+                    x = rows[i].getElementsByTagName("td")[getFieldIndex(fieldName)].innerText.toLowerCase();
+                    y = rows[i + 1].getElementsByTagName("td")[getFieldIndex(fieldName)].innerText.toLowerCase();
+
+                    if (dir == "asc") {
+                        if (x > y) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir == "desc") {
+                        if (x < y) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+
+            updateSortIcons(fieldName, dir);
+        }
+
+        function getFieldIndex(fieldName) {
+            var headers = document.querySelectorAll("th");
+            for (var i = 0; i < headers.length; i++) {
+                if (headers[i].innerText.trim().toLowerCase() === fieldName) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        function updateSortIcons(fieldName, direction) {
+            var headers = document.querySelectorAll("th");
+            for (var i = 0; i < headers.length; i++) {
+                headers[i].classList.remove("asc", "desc");
+            }
+
+            var header = document.querySelector("th:contains('" + fieldName + "')");
+            if (header) {
+                header.classList.add(direction);
+            }
+        }
+    </script>
+
+</body>
+
+</html>
