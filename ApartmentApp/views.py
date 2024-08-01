@@ -70,37 +70,6 @@ def apartment_list(request):
     }
 
     return render(request, 'apartment_list.html', context)
-def login_view(request):
-    global logged_in
-
-    if request.user.is_authenticated:
-        logged_in = True
-        return redirect('apartment_list')
-
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            print(f"Username: {username}, Password: {password}")
-
-            if username == 'sudhirgoli' and password == 'password':
-                logged_in = True
-                return redirect('apartment_list')
-            
-            error_message = 'Invalid credentials.'
-        else:
-            error_message = 'Invalid form data. Please try again.'
-    else:
-        form = LoginForm()
-        error_message = None
-
-    context = {
-        'form': form,
-        'error_message': error_message,
-    }
-    return render(request, 'login.html', context)
-
 
 def delete_apartment(request, apartment_id):
     apartment = Apartment.objects.get(id=apartment_id)
@@ -237,9 +206,7 @@ def edit_payment(request, payment_id):
 
     return render(request, 'edit_payment.html', context)
 
-from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
-from .forms import LoginForm
 
 
 
