@@ -83,7 +83,7 @@ DATABASES = {
         'USER': 'ucj72apafltrjp',
         'PASSWORD': 'p5da0121fa2859323e3a58c5bdc395d77791d9bfb46541ed79e22a5b7e1d50ca2',
         'HOST': 'cbec45869p4jbu.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com', 
-        'PORT': 'your-database-port',  
+        'PORT': '5432',  
     }
 }
 
