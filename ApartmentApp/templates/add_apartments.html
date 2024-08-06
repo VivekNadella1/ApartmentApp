@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Apartment</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <style>
+        *,
+        *:before,
+        *:after {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f0f0f0;
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            display: flex;
+        }
+
+        .sidebar {
+            background-color: #2c3e50;
+            width: 250px;
+            height: 100vh;
+            position: fixed;
+            left: -250px;
+            top: 0;
+            transition: left 0.3s, background-color 0.3s;
+            padding-top: 60px;
+            z-index: 1000;
+        }
+
+        .sidebar a {
+            padding: 15px 20px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #f2f2f2;
+            display: block;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #1abc9c;
+            color: white;
+        }
+
+        .sidebar .active {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .toggle-btn {
+            position: fixed;
+            left: 10px;
+            top: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1001;
+            color: #2c3e50;
+            transition: color 0.3s;
+        }
+
+        .toggle-btn.open {
+            color: #3498db;
+        }
+
+        .content {
+            margin-left: 20px;
+            padding: 20px;
+            transition: margin-left 0.3s;
+            flex-grow: 1;
+            width: calc(100% - 270px);
+        }
+
+        .content h1 {
+            font-size: 36px;
+            font-weight: 600;
+            color: #333333;
+            border-bottom: 2px solid #3498db;
+            margin-bottom: 20px;
+        }
+
+        form {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 40px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        form input, form select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 300;
+            color: #333333;
+        }
+
+        form button {
+            background-color: #3498db;
+            color: #fff;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+            font-weight: 600;
+        }
+
+        form button:hover {
+            background-color: #2073b0;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 16px;
+        }
+
+        .back-link:hover {
+            color: #2073b0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="toggle-btn">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <div class="sidebar">
+        <a href="{% url 'apartment_list' %}">Apartment List</a>
+		<a href="{% url 'add_apartment' %}">Add Apartment</a>
+        <a href="{% url 'monthly_report' %}">Monthly Reports</a>
+        <a href="{% url 'unpaid_reports' %}">Unpaid Reports</a>
+        <a href="{% url 'export_confirmation' %}">Export To Excel</a>
+
+    </div>
+
+    <div class="content">
+        <h1>Add Apartment</h1>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Add Apartment</button>
+        </form>
+
+        <a href="{% url 'apartment_list' %}" class="back-link">Back to Apartment List</a>
+    </div>
+
+    <script>
+        document.querySelector('.toggle-btn').addEventListener('click', function() {
+            var sidebar = document.querySelector('.sidebar');
+            var content = document.querySelector('.content');
+            var isOpen = sidebar.style.left === '0px';
+
+            sidebar.style.left = isOpen ? '-250px' : '0px';
+            content.style.marginLeft = isOpen ? '20px' : '270px';
+            this.classList.toggle('open', !isOpen);
+        });
+    </script>
+
+</body>
+</html>

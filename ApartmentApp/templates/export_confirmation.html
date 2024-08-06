@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Export Confirmation</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        h1 {
+            color: #3498db;
+        }
+
+        .alert {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 8px;
+        }
+
+        .button-container {
+            margin-top: 20px;
+        }
+
+        .redownload-button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+        }
+    
+        .navbar a {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+    
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .active {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{% url 'apartment_list' %}">Apartment List</a>
+		<a href="{% url 'add_apartment' %}">Add Apartment</a>
+        <a href="{% url 'monthly_report' %}">Monthly Reports</a>
+        <a href="{% url 'unpaid_reports' %}">Unpaid Reports</a>
+        <a href="{% url 'export_confirmation' %}" class="active">Export To Excel</a>
+    </div>  
+<div class="container">
+   
+    <h1>Export Confirmation</h1>
+
+    <script>
+        function redownload() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "{% url 'export_to_excel' %}", true);
+            xhr.responseType = "blob";
+            xhr.onload = function() {
+                var a = document.createElement('a');
+                a.href = window.URL.createObjectURL(xhr.response);
+                a.download = "apartments.xlsx";
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            };
+            xhr.send();
+
+            alert("Excel file is being redownloaded. Please check your downloads.");
+        }
+    </script>
+
+    <div class="alert">Excel file is being generated. Please check your downloads.</div>
+
+    <div class="button-container">
+        <button class="redownload-button" onclick="redownload()">Redownload</button>
+    </div>
+</div>
+
+</body>
+</html>
