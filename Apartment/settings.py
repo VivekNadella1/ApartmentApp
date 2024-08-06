@@ -76,14 +76,16 @@ WSGI_APPLICATION = 'Apartment.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'd4hc90om8ipsrr',
+        'USER': 'ucj72apafltrjp',
+        'PASSWORD': 'p5da0121fa2859323e3a58c5bdc395d77791d9bfb46541ed79e22a5b7e1d50ca2',
+        'HOST': 'cbec45869p4jbu.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com', 
+        'PORT': 'your-database-port',  
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
