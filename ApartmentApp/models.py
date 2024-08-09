@@ -8,8 +8,8 @@ class Apartment(models.Model):
     phase = models.IntegerField(choices=((1, 'BRP'), (2, 'BPN'), (3, 'BHA')))  # Fixed duplicate choice values
     flat_occupancy = models.IntegerField(choices=((1, 'Bachelors'), (2, 'Family')))
     unit_id = models.BigIntegerField()  # Changed to BigIntegerField
-    phone_number = models.BigIntegerField(validators=[MinValueValidator(1000000000), MaxValueValidator(9999999999)])  # Changed to BigIntegerField
-    emergency_number = models.BigIntegerField(validators=[MinValueValidator(1000000000), MaxValueValidator(9999999999)], blank=True)  # Changed to BigIntegerField
+    phone_number = models.BigIntegerField(validators=[MinValueValidator(1000000000), MaxValueValidator(9999999999)]) 
+    emergency_number = models.BigIntegerField(blank=True) 
     adhar_number = models.BigIntegerField()  # Changed to BigIntegerField
     email = models.EmailField(blank=True)
     rent_and_maintenance = models.BigIntegerField()  # Changed to BigIntegerField
