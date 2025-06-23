@@ -5,21 +5,21 @@ from django.db.models.signals import post_save
 
 class Apartment(models.Model):
     name = models.CharField(max_length=100)
-    phase = models.IntegerField(choices=((1, 'BRP'), (2, 'BPN'), (3, 'BHA')))  # Fixed duplicate choice values
+    phase = models.IntegerField(choices=((1, 'BRP'), (2, 'BRN'), (3, 'BHIG'), (4, 'Office'), (5, 'Shop')))  # Fixed duplicate choice values
     flat_occupancy = models.IntegerField(choices=((1, 'Bachelors'), (2, 'Family')))
     unit_id = models.BigIntegerField()  # Changed to BigIntegerField
     phone_number = models.BigIntegerField(validators=[MinValueValidator(1000000000), MaxValueValidator(9999999999)]) 
     emergency_number = models.BigIntegerField(blank=True) 
     adhar_number = models.BigIntegerField()  # Changed to BigIntegerField
     email = models.EmailField(blank=True)
-    rent_and_maintenance = models.BigIntegerField()  # Changed to BigIntegerField
+    security_deposit = models.BigIntegerField()  # Changed to BigIntegerField
+    rent_and_maintenance = models.BigIntegerField()  # Changed to BigIntegerFiel
+    internet_charge = models.BigIntegerField(blank=True)  # Changed to BigIntegerField
     parking = models.BigIntegerField()  # Changed to BigIntegerField
     other_payments = models.BigIntegerField(blank=True)  # Changed to BigIntegerField
     active = models.BooleanField(default=True)
     furnished = models.BooleanField(default=True)
     internet = models.BooleanField(default=True)
-    internet_charge = models.BigIntegerField(blank=True)  # Changed to BigIntegerField
-    security_deposit = models.BigIntegerField()  # Changed to BigIntegerField
     date_created = models.DateField(default=datetime.date.today)
     start_date = models.DateField(default=datetime.date.today)
     agreement = models.FileField(upload_to='agreements/', null=True, blank=True)
