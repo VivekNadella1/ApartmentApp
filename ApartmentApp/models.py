@@ -5,8 +5,8 @@ from django.db.models.signals import post_save
 
 class Apartment(models.Model):
     name = models.CharField(max_length=100)
-    phase = models.IntegerField(choices=((1, 'BRP'), (2, 'BRN'), (3, 'BHIG'), (4, 'Office'), (5, 'Shop')))  # Fixed duplicate choice values
-    flat_occupancy = models.IntegerField(choices=((1, 'Bachelors'), (2, 'Family')))
+    phase = models.IntegerField(choices=((1, 'BRP'), (2, 'BRN'), (3, 'BHIG')))  # Fixed duplicate choice values
+    flat_occupancy = models.IntegerField(choices=((1, 'Bachelors'), (2, 'Family'), (3, 'Office'), (4, 'Shop'), (5, 'N/A')))
     unit_id = models.BigIntegerField()  # Changed to BigIntegerField
     phone_number = models.BigIntegerField(validators=[MinValueValidator(1000000000), MaxValueValidator(9999999999)]) 
     emergency_number = models.BigIntegerField(blank=True) 
