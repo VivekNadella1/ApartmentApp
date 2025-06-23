@@ -19,7 +19,7 @@ class Apartment(models.Model):
     other_payments = models.BigIntegerField(blank=True)  # Changed to BigIntegerField
     active = models.BooleanField(default=True)
     furnished = models.BooleanField(default=True)
-    internet = models.BooleanField(default=True)
+    internet = models.BooleanField(default=False)
     date_created = models.DateField(default=datetime.date.today)
     start_date = models.DateField(default=datetime.date.today)
     agreement = models.FileField(upload_to='agreements/', null=True, blank=True)
