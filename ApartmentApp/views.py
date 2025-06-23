@@ -51,9 +51,7 @@ def LogoutPage(request):
 @login_required(login_url='login')
 def apartment_list(request):
     show_inactive = request.GET.get('show_inactive') == '1'
-
-    apartments = Apartment.objects.all()
-
+    apartments = Apartment.objects.all().order_by('unit_id')
     if not show_inactive:
         apartments = apartments.filter(active=True)
     
